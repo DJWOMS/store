@@ -1,0 +1,5 @@
+Django==2.1.5
+django-js-asset==1.1.0
+django-mptt==0.9.1
+psycopg2==2.7.6.1
+pytz==2018.9
