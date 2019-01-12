@@ -39,5 +39,10 @@ class Product(models.Model):
         return self.title
 
 
+class Basket(models.Model):
+    """Корзина"""
+    pass
+
+
 
 

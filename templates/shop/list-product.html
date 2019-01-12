@@ -1,8 +1,46 @@
 {% extends 'shop/base.html' %}
-{% block content %}
-    {% for product in object_list %}
-        <h2>{{ product.title }}</h2>
-        <p>{{ product.price }}</p>
-        <p>{{ product.description }}</p>
-    {% endfor %}
-{% endblock content %}
+{% load staticfiles %}
+{% block product %}
+    <div class="col-md-10 col-md-push-2">
+        <div class="row row-pb-lg">
+            {% for product in object_list %}
+                <div class="col-md-4 text-center">
+                    <div class="product-entry">
+                        <div class="product-img"
+                             style="background-image: url({% static 'images/item-5.jpg' %});">
+                            <p class="tag"><span class="new">New</span></p>
+                            <div class="cart">
+                                <p>
+                                    <span class="addtocart"><a href="cart.html"><i
+                                            class="icon-shopping-cart"></i></a></span>
+                                    <span><a href="product-detail.html"><i
+                                            class="icon-eye"></i></a></span>
+                                    <span><a href="#"><i class="icon-heart3"></i></a></span>
+                                    <span><a href="add-to-wishlist.html"><i
+                                            class="icon-bar-chart"></i></a></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="desc">
+                            <h3><a href={% url 'product_detail' slug=product.slug %}>{{ product.title }}</a></h3>
+                            <p class="price"><span>${{ product.price }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="pagination">
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{#    <p>{{ product.description }}</p>#}
+{% endblock product %}
