@@ -124,6 +124,11 @@ STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [STATIC_DIR, ]
 
+
+MY_INFO = 80
+MESSAGE_LEVEL = MY_INFO
+
+
 try:
     from .local_settings import *
 except ImportError:
