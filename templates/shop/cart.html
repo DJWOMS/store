@@ -57,21 +57,25 @@
                             </div>
                             <div class="one-eight text-center">
                                 <div class="display-tc">
-                                    <input type="text" id="quantity" name="quantity"
-                                           class="form-control input-number text-center"
-                                           value="{{item.quantity}}"
-                                           min="1"
-                                           max="100">
+                                    <form action="{% url 'edit_item' pk=item.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="text" id="quantity" name="quantity"
+                                               class="form-control input-number text-center"
+                                               value="{{ item.quantity }}"
+                                               min="1"
+                                               max="100">
+                                        <button type="submit" class="closed"></button>
+                                    </form>
                                 </div>
                             </div>
                             <div class="one-eight text-center">
                                 <div class="display-tc">
-                                    <span class="price">$</span>
+                                    <span class="price">${{ item.price_sum }}</span>
                                 </div>
                             </div>
                             <div class="one-eight text-center">
                                 <div class="display-tc">
-                                    <a href="#" class="closed"></a>
+                                    <a href="{% url 'del_item' pk=item.id %}" class="closed"></a>
                                 </div>
                             </div>
                         </div>

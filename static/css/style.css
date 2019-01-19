@@ -18,6 +18,11 @@ body {
   color: #595959;
   background: #fff; }
 
+.soc-btn {
+    width: 50px;
+    height: 50px;
+}
+
 #page {
   position: relative;
   overflow-x: hidden;
