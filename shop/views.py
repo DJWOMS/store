@@ -1,10 +1,11 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
 from Store import settings
-from .models import Product, Cart, CartItem
+from .models import (Product, Cart, CartItem, Order, Category)
 from .forms import CartItemForm
 
 
@@ -55,6 +56,11 @@ class CartItemList(ListView):
     def get_queryset(self):
         return CartItem.objects.filter(cart__user=self.request.user, cart__accepted=False)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cart_id"] = Cart.objects.get(user=self.request.user, accepted=False).id
+        return context
+
 
 class EditCartItem(View):
     """Редактирование товара в карзине"""
@@ -74,6 +80,52 @@ class RemoveCartItem(View):
         messages.add_message(request, settings.MY_INFO, 'Товар удален')
         return redirect("cart_item")
 
+
+class Search(View):
+    """Поиск товаров"""
+    def get(self, request):
+        search = request.GET.get("search", None)
+        products = Product.objects.filter(Q(title__icontains=search) |
+                                          Q(category__name__icontains=search))
+        return render(request, "shop/list-product.html", {"object_list": products})
+
+
+class AddOrder(View):
+    """Создание заказа"""
+    def post(self, request):
+        cart = Cart.objects.get(id=request.POST.get("pk"), user=request.user)
+        cart.accepted = True
+        cart.save()
+        Order.objects.create(cart=cart)
+        Cart.objects.create(user=request.user)
+        return redirect('orders')
+
+
+class OrderList(ListView):
+    """Список заказов пользователя"""
+    template_name = "shop/order-list.html"
+
+    def get_queryset(self):
+        return Order.objects.filter(cart__user=self.request.user, accepted=False)
+
+    def post(self, request):
+        order = Order.objects.get(id=request.POST.get("pk"), cart__user=request.user, accepted=False)
+        order.delete()
+        return redirect("orders")
+
+
+class CategoryProduct(ListView):
+    """Список товаров из категории"""
+    template_name = "shop/list-product.html"
+
+    def get_queryset(self):
+        slug = self.kwargs.get("slug")
+        node = Category.objects.get(slug=slug)
+        if Product.objects.filter(category__slug=slug).exists():
+            products = Product.objects.filter(category__slug=slug)
+        else:
+            products = Product.objects.filter(category__slug__in=[x.slug for x in node.get_family()])
+        return products
 
 
 

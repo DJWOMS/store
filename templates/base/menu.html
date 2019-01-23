@@ -1,3 +1,4 @@
+{% load mptt_tags %}
 <nav class="colorlib-nav" role="navigation">
     <div class="top-menu">
         <div class="container">
@@ -9,20 +10,30 @@
                     <ul>
                         <li class="active"><a href="/">Home</a></li>
                         <li class="has-dropdown">
-                            <a href="shop.html">Shop</a>
+                            <a href="/">Категории</a>
                             <ul class="dropdown">
-                                {#                                <li><a href="product-detail.html">Product Detail</a></li>#}
+                                {% recursetree menu_categoryes %}
+                                    <div class="a-node">
+                                        <a class="dropdown-item"
+                                           href="{% url 'category' slug=node.slug %}">{{ node.name }}</a>
+                                        {% if not node.is_leaf_node %}
+                                            <div class="a-child">
+                                                <a class="" href="#">{{ children }}</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endrecursetree %}
+                            </ul>
+                        </li>
+                        <li class="has-dropdown">
+                            <a href="#">Profile</a>
+                            <ul class="dropdown">
                                 {% if user.is_authenticated %}
                                     <li><a href="{% url 'cart_item' %}">Cart</a></li>
                                 {% endif %}
-                                <li><a href="checkout.html">Checkout</a></li>
-                                <li><a href="order-complete.html">Order Complete</a></li>
-                                {#                                <li><a href="add-to-wishlist.html">Wishlist</a></li>#}
+                                <li><a href="{% url 'orders' %}">Order</a></li>
                             </ul>
                         </li>
-                        {#                        <li><a href="blog.html">Blog</a></li>#}
-
-                        <li><a href="contact.html">Contact</a></li>
                         {% if user.is_authenticated %}
                             <li><a href="/accounts/logout/">Logout</a></li>
                             <li><a href="#">{{ user.username }}</a></li>
@@ -30,6 +41,13 @@
                             <li><a href="/accounts/login/">Login</a></li>
                         {% endif %}
                         <li><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+                        <li>
+                            <form method="get" action="{% url 'search' %}">
+                                {% csrf_token %}
+                                <input type="text" value="" name="search" placeholder="Поиск">
+                                <button class="small" type="submit">Найти</button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

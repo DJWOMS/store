@@ -1,0 +1,59 @@
+{% extends 'shop/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="colorlib-shop">
+        <div class="container">
+            <div class="row row-pb-md">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="product-name">
+                        <div class="one-forth text-center">
+                            <span>Дата</span>
+                        </div>
+                        <div class="one-eight text-center">
+                            <span>Статус</span>
+                        </div>
+                        <div class="one-eight text-center">
+                            <span>Сумма</span>
+                        </div>
+                        <div class="one-eight text-center">
+                            <span>Remove</span>
+                        </div>
+                    </div>
+                    {% for order in object_list %}
+                        <div class="product-cart">
+                            <div class="one-forth">
+                                <div class="product-img">
+                                </div>
+                                <div class="display-tc">
+                                    <h3>{{ order.date}}</h3>
+                                </div>
+                            </div>
+                            <div class="one-eight text-center">
+                                <div class="display-tc">
+                                    <span class="price">{{ order.accepted }}</span>
+                                </div>
+                            </div>
+                            <div class="one-eight text-center">
+                                <div class="display-tc">
+                                    <span class="price">$</span>
+                                </div>
+                            </div>
+                            <div class="one-eight text-center">
+                                <div class="display-tc">
+                                    <form action="{% url 'orders' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="number" name="pk"
+                                               value="{{ order.id }}"
+                                               hidden>
+                                        <button type="submit" class="closed"></button>
+                                    </form>
+{#                                    <a href="{% url 'del_item' pk=item.id %}" class="closed"></a>#}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

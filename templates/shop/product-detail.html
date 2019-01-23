@@ -14,22 +14,21 @@
                         </div>
                     {% endfor %}
                 {% endif %}
+
                 <div class="row">
                     <div class="col-md-5">
                         <div class="product-entry">
-                            <div class="product-img"
-                                 style="background-image: url({% static 'images/item-7.jpg' %});">
-                                <p class="tag"><span class="sale">Sale</span></p>
-                            </div>
-                            <div class="thumb-nail">
-                                <a href="#" class="thumb-img"
-                                   style="background-image: url({% static 'images/item-11.jpg' %});"></a>
-                                <a href="#" class="thumb-img"
-                                   style="background-image: url({% static 'images/item-12.jpg' %});"></a>
-                                <a href="#" class="thumb-img"
-                                   style="background-image: url({% static 'images/item-16.jpg' %});"></a>
-                            </div>
-                        </div>
+                            {% for img in product.gallery.photos.all %}
+                                <div class="product-img"
+                                     style="">
+                                    <p class="tag"><span class="sale">Sale</span></p>
+                                </div>
+                                <div class="thumb-nail">
+                                    <a href="#" class="thumb-img"
+                                       style="background-image: url({{ img.image.url }});"></a>
+                                </div>
+                                </div>
+                            {% endfor %}
                     </div>
                     <div class="col-md-7">
                         <div class="desc">
@@ -90,9 +89,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p>
 
-                                </p>
                             </div>
 
                         </div>

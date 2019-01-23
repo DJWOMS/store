@@ -87,16 +87,22 @@
                     <div class="total-wrap">
                         <div class="row">
                             <div class="col-md-8">
-                                <form action="#">
+                                <form action="{% url 'add_order' %}" method="post">
                                     <div class="row form-group">
                                         <div class="col-md-9">
-                                            <input type="text" name="quantity"
-                                                   class="form-control input-number"
-                                                   placeholder="Your Coupon Number...">
+                                            {#                                            <input type="text" name="quantity"#}
+                                            {#                                                   class="form-control input-number"#}
+                                            {#                                                   placeholder="Your Coupon Number...">#}
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="submit" value="Apply Coupon"
-                                                   class="btn btn-primary">
+                                                {% csrf_token %}
+                                                <input type="number"
+                                                       name="pk"
+                                                       value="{{ cart_id }}"
+                                                       hidden>
+                                                <button type="submit" class="btn btn-primary">
+                                                    Заказать
+                                                </button>
                                         </div>
                                     </div>
                                 </form>
