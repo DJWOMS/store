@@ -128,7 +128,38 @@ class CategoryProduct(ListView):
         return products
 
 
+class SortProducts(View):
+    """Фильтр товаров"""
+    def get(self, request):
+        category = request.GET.get("category", None)
+        price_1 = request.GET.get("price1", 0)
+        price_2 = request.GET.get("price2", 10000000000000)
+        availability = request.GET.get("availability", None)
+        print(price_2)
+        print(type(price_2))
 
+        filt = []
+
+        if category:
+            cat = Q()
+            cat &= Q(category__name__icontains=category)
+            filt.append(cat)
+        if price_1 or price_2:
+            price = Q()
+            price &= Q(price__gte=int(price_1)) & Q(price__lte=int(price_2))
+            filt.append(price)
+        if availability:
+            if availability == "False":
+                avail = False
+            elif availability == "True":
+                avail = True
+            availability = Q()
+            availability &= Q(availability=avail)
+            filt.append(availability)
+
+        sort = Product.objects.filter(*filt)
+        print(sort)
+        return render(request, "shop/list-product.html", {"object_list": sort})
 
 
 
