@@ -55,6 +55,8 @@
 
     {% include 'base/footer.html' %}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="{% static 'js/vue.js' %}"></script>
 <!-- jQuery -->
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <!-- jQuery Easing -->
@@ -76,5 +78,9 @@
 <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
 <!-- Main -->
 <script src="{% static 'js/main.js' %}"></script>
+
+
+{% block script_vue %}
+{% endblock script_vue %}
 </body>
 </html>

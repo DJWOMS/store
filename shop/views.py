@@ -1,6 +1,10 @@
+import json
+from django.core import serializers
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum
+from django.forms.models import model_to_dict
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
@@ -12,7 +16,7 @@ from profiles.forms import ProfileForm
 
 from .models import (Product, Cart, CartItem, Order, Category)
 from .forms import CartItemForm
-
+from .serializers import ProductSer
 
 class ProductsList(ListView):
     """Список всех продуктов"""
@@ -168,13 +172,14 @@ class CategoryProduct(ListView):
 class SortProducts(View):
     """Фильтр товаров"""
     def get(self, request):
-        category = request.GET.get("category", None)
-        price_1 = request.GET.get("price1", 0)
-        price_2 = request.GET.get("price2", 10000000000000)
-        availability = request.GET.get("availability", None)
-        print(price_2)
-        print(type(price_2))
+        return render(request, "shop/vue/list-product-vue.html")
 
+    def post(self, request):
+        category = request.POST.get("category", None)
+        price_1 = request.POST.get("price1", 0)
+        price_2 = request.POST.get("price2", 10000000000000)
+        availability = request.POST.get("availability", None)
+        print(category)
         filt = []
 
         if category:
@@ -196,8 +201,13 @@ class SortProducts(View):
 
         sort = Product.objects.filter(*filt)
         print(sort)
-        return render(request, "shop/list-product.html", {"object_list": sort})
+        # dict_obj = model_to_dict(sort)
 
+        # products_sort = serializers.serialize("json", sort)
+        # return JsonResponse({"products": products_sort}, safe=False)
+        # data = json.dumps(dict_obj)
+        serializers = ProductSer(sort, many=True)
+        return JsonResponse(serializers.data, safe=False)
 
 
 

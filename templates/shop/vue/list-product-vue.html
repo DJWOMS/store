@@ -1,0 +1,206 @@
+{% extends 'shop/base.html' %}
+{% load staticfiles %}
+{#{% load bootstrap4 %}#}
+{% block product %}
+    <div class="col-md-10 col-md-push-2" id="app">
+        <div class="row row-pb-lg">
+            <div v-for="product in products"
+                 class="col-md-4 text-center">
+                <div class="product-entry">
+                    <div class="product-img"
+                         style="background-image: url();">
+                            {#product.photo#}
+                        <p class="tag"><span class="new">New</span></p>
+                        <div class="cart">
+                            <p>
+                                    <span class="addtocart"><a href="cart.html"><i
+                                            class="icon-shopping-cart"></i></a></span>
+                                <span><a href="product-detail.html"><i
+                                        class="icon-eye"></i></a></span>
+                                <span><a href="#"><i class="icon-heart3"></i></a></span>
+                                <span><a href="add-to-wishlist.html"><i
+                                        class="icon-bar-chart"></i></a></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="desc">
+                        <h3>
+                            <a href="#"><% product.title %></a>
+                        </h3>
+                        <p class="price"><span>$<% product.price %></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {#            {% bootstrap_pagination page_obj %}#}
+            {#            <div class="col-md-12">#}
+            {#                <ul class="pagination">#}
+            {#                    <li class="disabled"><a href="#">&laquo;</a></li>#}
+            {#                    <li class="active"><a href="#">1</a></li>#}
+            {#                    <li><a href="#">2</a></li>#}
+            {#                    <li><a href="#">3</a></li>#}
+            {#                    <li><a href="#">4</a></li>#}
+            {#                    <li><a href="#">&raquo;</a></li>#}
+            {#                </ul>#}
+            {#            </div>#}
+
+        </div>
+    </div>
+    {#  Sidebar  #}
+    <div class="col-md-2 col-md-pull-10">
+        <div class="sidebar">
+            <div class="side">
+                <h2>Categories</h2>
+                <div class="fancy-collapse-panel">
+                    <div class="panel-group" id="accordion" role="tablist"
+                         aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion"
+                                       href="#collapseOne" aria-expanded="true"
+                                       aria-controls="collapseOne">Men
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse"
+                                 role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <ul>
+                                        <li><a v-on:click="search" href="#">LG</a></li>
+                                        <li><a href="/sort/?category=Noth">Noth</a></li>
+                                        <li><a href="/sort/?category=TV">TV</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="side">
+                <h2>Price Range</h2>
+                <form method="post" class="colorlib-form-2">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="guests">Price from:</label>
+                                <div class="form-field">
+                                    <i class="icon icon-arrow-down3"></i>
+                                    <select v-model="price1"
+                                            v-on:change="search"
+                                            name="people"
+                                            id="people"
+                                            class="form-control">
+                                        <option v-bind:value="1">1</option>
+                                        <option v-bind:value="200">200</option>
+                                        <option v-bind:value="300">300</option>
+                                        <option v-bind:value="1000">1000</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="guests">Price to:</label>
+                                <div class="form-field">
+                                    <i class="icon icon-arrow-down3"></i>
+                                    <select name="people" id="people" class="form-control">
+                                        <option value="2000">2000</option>
+                                        <option value="4000">4000</option>
+                                        <option value="6000">6000</option>
+                                        <option value="8000">8000</option>
+                                        <option value="10000">10000</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="side">
+                <h2>availability</h2>
+                <div class="color-wrap">
+                    <p class="color-desc">
+                        <a href="#" class="color color-1">True</a>
+                        <a href="#" class="color color-2">False</a>
+                    </p>
+                </div>
+            </div>
+            {#        <div class="side">#}
+            {#            <h2>Size</h2>#}
+            {#            <div class="size-wrap">#}
+            {#                <p class="size-desc">#}
+            {#                    <a href="#" class="size size-1">xs</a>#}
+            {#                    <a href="#" class="size size-2">s</a>#}
+            {#                    <a href="#" class="size size-3">m</a>#}
+            {#                    <a href="#" class="size size-4">l</a>#}
+            {#                    <a href="#" class="size size-5">xl</a>#}
+            {#                    <a href="#" class="size size-5">xxl</a>#}
+            {#                </p>#}
+            {#            </div>#}
+            {#        </div>#}
+        </div>
+    </div>
+{% endblock product %}
+
+{% block script_vue %}
+    <script>
+        (function () {
+            let csrftoken = Cookies.get('csrftoken');
+            $.ajaxSetup({
+                headers: {"X-CSRFToken": csrftoken}
+            });
+        })();
+        var app = new Vue({
+            el: '#app',
+            delimiters: ["<%", "%>"],
+            data() {
+                return {
+                    products: '',
+                    url: "http://127.0.0.1:8000/sort/",
+
+                    category: '',
+                    price1: '',
+                    price2: '',
+                    availability: '',
+                }
+            },
+            created() {
+                this.loadAll()
+            },
+            methods: {
+                loadAll() {
+                    $.ajax({
+                        url: this.url,
+                        type: "POST",
+                        data: {
+                            category: '',
+                            price_1: '',
+                            price_2: '',
+                            availability: '',
+                        },
+                        success: (response) => {
+                            this.products = response
+                        }
+                    })
+                },
+                search() {
+                    $.ajax({
+                        url: this.url,
+                        type: "POST",
+                        data: {
+                            category: this.category,
+                            price_1: this.price1,
+                            price_2: this.price2,
+                            availability: this.availability,
+                        },
+                        success: (response) => {
+                            this.products = response
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+{% endblock script_vue %}

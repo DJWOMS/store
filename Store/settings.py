@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'photologue',
     'sortedm2m',
 
+    'rest_framework',
+
     'mptt',
     'shop',
     'country',

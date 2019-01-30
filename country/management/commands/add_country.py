@@ -4,7 +4,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname("../" + __file__))
 sys.path.append(BASE_DIR)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'future.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'store.settings'
 
 import django
 
