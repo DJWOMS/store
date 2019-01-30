@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 
     'mptt',
     'shop',
+    'country',
+    'profiles',
 ]
 
 MIDDLEWARE = [
