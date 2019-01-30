@@ -13,6 +13,7 @@ urlpatterns = [
     path("search/", views.Search.as_view(), name="search"),
     path("add-order/", views.AddOrder.as_view(), name="add_order"),
     path("orders/", views.OrderList.as_view(), name="orders"),
+    path("checkout/<int:pk>/", views.CheckOut.as_view(), name="checkout"),
     path("category/<slug:slug>/", views.CategoryProduct.as_view(), name="category"),
     path("sort/", views.SortProducts.as_view(), name="sort"),
 ]

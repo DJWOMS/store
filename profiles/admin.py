@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Profile
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    """Профили пользователей"""
+    list_display = ('user', 'first_name', 'last_name', 'phone')
+

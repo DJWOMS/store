@@ -18,17 +18,17 @@
                 <div class="row">
                     <div class="col-md-5">
                         <div class="product-entry">
+                            <div class="product-img"
+                                 style="background-image: url({{ product.photo.image.url }});">
+                                <p class="tag"><span class="sale">Sale</span></p>
+                            </div>
                             {% for img in product.gallery.photos.all %}
-                                <div class="product-img"
-                                     style="">
-                                    <p class="tag"><span class="sale">Sale</span></p>
-                                </div>
                                 <div class="thumb-nail">
                                     <a href="#" class="thumb-img"
                                        style="background-image: url({{ img.image.url }});"></a>
                                 </div>
-                                </div>
                             {% endfor %}
+                        </div>
                     </div>
                     <div class="col-md-7">
                         <div class="desc">
@@ -54,44 +54,37 @@
                                 </p>
                             </div>
                             <div class="row row-pb-sm">
-                                <div class="col-md-5">
-                                    <div class="input-group">
+                                <form method="post"
+                                      action="{% url 'add_cartitem' product.slug product.id %}">
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            {% csrf_token %}
                                             <span class="input-group-btn">
-                                            <button type="button" class="quantity-left-minus btn"
-                                                    data-type="minus" data-field="">
-                                              <i class="icon-minus2"></i>
-                                            </button>
-                                            </span>
-                                        <input type="text" id="quantity" name="quantity"
-                                               class="form-control input-number" value="1"
-                                               min="1"
-                                               max="100">
-                                        <span class="input-group-btn">
-                                            <button type="button" class="quantity-right-plus btn"
-                                                    data-type="plus" data-field="">
-                                                <i class="icon-plus2"></i>
-                                            </button>
-                                            </span>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <form action="{% url 'add_cartitem' product.slug product.id %}"
-                                                  method="post"
-                                                  class="form-control">
-                                                {% csrf_token %}
-                                                {{ form }}
-                                                <button class="btn btn-primary btn-addtocart"
-                                                        type="submit">
-                                                    <i class="icon-shopping-cart"></i>
-                                                    Add to Cart
-                                                </button>
-                                            </form>
+                                       	<button type="button" class="quantity-left-minus btn"
+                                                data-type="minus" data-field="quantity">
+                                          <i class="icon-minus2"></i>
+                                       	</button>
+                                   		</span>
+                                            <input type="text" id="quantity" name="quantity"
+                                                   class="form-control input-number" value="1"
+                                                   min="1" max="100">
+                                            <span class="input-group-btn">
+                                       	<button type="button" class="quantity-right-plus btn"
+                                                data-type="plus" data-field="quantity">
+                                            <i class="icon-plus2"></i>
+                                        </button>
+                                    	</span>
                                         </div>
                                     </div>
-                                </div>
-
+                                    <div class="col-md-12">
+                                        <button class="btn-primary btn-addtocart"
+                                                type="submit">
+                                            <i class="icon-shopping-cart"></i>
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-
                         </div>
                     </div>
                 </div>

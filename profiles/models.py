@@ -20,41 +20,41 @@ class Profile(models.Model):
     country = models.ForeignKey(
         Country,
         verbose_name='Страна',
-        blank=True,
+        default="1",
         null=True,
         on_delete=models.SET_NULL)
     state = models.ForeignKey(
         State,
         verbose_name='Республика/Штат',
-        blank=True,
+        default="1",
         null=True,
         on_delete=models.SET_NULL)
     city = models.ForeignKey(
         City,
         verbose_name='Город',
-        blank=True,
+        default="1",
         null=True,
         on_delete=models.SET_NULL)
     address = models.CharField("Адрес", max_length=250, default="")
     postcode = models.CharField("Индекс", max_length=120, default="")
-    phone = models.IntegerField("Телефон", default=100000000)
+    phone = models.IntegerField("Телефон", default=790000000)
 
     class Meta:
         verbose_name = "Профиль"
         verbose_name_plural = "Профили"
 
     def __str__(self):
-        return "Customer-Id:{}, {} {}".format(self.id, self.first_name, self.last_name)
+        return "Id:{}, {} {}".format(self.id, self.first_name, self.last_name)
 
-    # def get_absolute_url(self):
-    #     return reverse('customer:view_profile', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('profile', kwargs={'pk': self.user.id})
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    """Создание профиля"""
+    """Создание профиля пользователя при регистрации"""
     if created:
-        Profile.objects.create(user=instance)
+        Profile.objects.create(user=instance, id=instance.id)
 
 
 @receiver

@@ -36,7 +36,7 @@ class Command(BaseCommand):
         print("Все штаты добавлены")
 
     def add_cities(self):
-        for city in cities:
+        for city in cities[:51]:
             City.objects.create(id=city[0], name=city[1], state_id=city[2])
         print("Все города добавлены")
 

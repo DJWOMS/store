@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Профиль</h1>
+    <div class="row">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning alert-dismissable" role="alert">
+                    <button class="close" data-dismiss="alert">
+                        {{ message }}
+                        <small><sup>x</sup></small>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="col-md-12">
+            <p>{{ user }}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Company Name</th>
+                    <th>Address</th>
+                    <th>Country</th>
+                    <th>State/Province</th>
+                    <th>Towm/City</th>
+                    <th>Zip/Postal Code</th>
+                    <th>E-mail</th>
+                    <th>Phone Number</th>
+                </tr>
+                </thead>
+                <td>{{ profile.first_name }}</td>
+                <td>{{ profile.last_name }}</td>
+                <td>{{ profile.company_name }}</td>
+                <td>{{ profile.address }}</td>
+                <td>{{ profile.country }}</td>
+                <td>{{ profile.state }}</td>
+                <td>{{ profile.city }}</td>
+                <td>{{ profile.postcode }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ profile.phone }}</td>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-success"><a
+                    href="{% url 'edit_profile' user.id %}">Редактировать</a></button>
+        </div>
+    </div>
+{% endblock content %}

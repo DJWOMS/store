@@ -805,7 +805,7 @@ h1, h2, h3, h4, h5, h6, figure {
 .product-detail-wrap .thumb-nail {
     width: 100%;
     display: block;
-    float: left;
+    /*float: left;*/
 }
 
 @media screen and (max-width: 768px) {
@@ -818,11 +818,11 @@ h1, h2, h3, h4, h5, h6, figure {
     height: 120px;
     width: 31.87%;
     float: left;
-    margin-left: 8px;
+    margin-left: 5px;
 }
 
 .product-detail-wrap .thumb-nail .thumb-img:first-child {
-    margin-left: 0;
+    /*margin-left: 0;*/
 }
 
 @media screen and (max-width: 768px) {

@@ -1,5 +1,6 @@
 {% extends 'shop/base.html' %}
 {% load staticfiles %}
+{% load bootstrap4 %}
 {% block product %}
     <div class="col-md-10 col-md-push-2">
         <div class="row row-pb-lg">
@@ -7,7 +8,7 @@
                 <div class="col-md-4 text-center">
                     <div class="product-entry">
                         <div class="product-img"
-                             style="background-image: url({% static 'images/item-5.jpg' %});">
+                             style="background-image: url({{ product.photo.image.url }});">
                             <p class="tag"><span class="new">New</span></p>
                             <div class="cart">
                                 <p>
@@ -30,16 +31,18 @@
             {% endfor %}
         </div>
         <div class="row">
-            <div class="col-md-12">
-                <ul class="pagination">
-                    <li class="disabled"><a href="#">&laquo;</a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">&raquo;</a></li>
-                </ul>
-            </div>
+            {% bootstrap_pagination page_obj %}
+{#            <div class="col-md-12">#}
+{#                <ul class="pagination">#}
+{#                    <li class="disabled"><a href="#">&laquo;</a></li>#}
+{#                    <li class="active"><a href="#">1</a></li>#}
+{#                    <li><a href="#">2</a></li>#}
+{#                    <li><a href="#">3</a></li>#}
+{#                    <li><a href="#">4</a></li>#}
+{#                    <li><a href="#">&raquo;</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+
         </div>
     </div>
 {#    <p>{{ product.description }}</p>#}

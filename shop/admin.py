@@ -11,6 +11,7 @@ from .models import (Category, Product, Cart, CartItem, Order)
 
 class CategoryMPTTModelAdmin(MPTTModelAdmin):
     mptt_level_indent = 20
+    prepopulated_fields = {"slug": ("name",)}
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -36,11 +37,17 @@ class GalleryAdmin(GalleryAdminDefault):
     form = GalleryAdminForm
 
 
+class CartAdmin(admin.ModelAdmin):
+    """Корзины"""
+    list_display = ("id", "user", "accepted")
+    list_display_links = ("user",)
+
+
 admin.site.unregister(Gallery)
 admin.site.register(Gallery, GalleryAdmin)
 
 admin.site.register(Category, CategoryMPTTModelAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Cart)
+admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem, CartItemAdmin)
 admin.site.register(Order)

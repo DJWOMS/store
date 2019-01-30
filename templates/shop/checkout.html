@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="colorlib-shop">
+        <div class="container">
+            <div class="row row-pb-md">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="process-wrap">
+                        <div class="process text-center active">
+                            <p><span>01</span></p>
+                            <h3>Shopping Cart</h3>
+                        </div>
+                        <div class="process text-center active">
+                            <p><span>02</span></p>
+                            <h3>Checkout</h3>
+                        </div>
+                        <div class="process text-center">
+                            <p><span>03</span></p>
+                            <h3>Order Complete</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <form action="{% url 'edit_profile' pk=user.id %}"
+                          method="post"
+                          class="colorlib-form">
+                {% csrf_token %}
+                <h2>Billing Details</h2>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="country">Select Country</label>
+                            <div class="form-field">
+                                <i class="icon icon-arrow-down3"></i>
+                                <select name="country" id="people" class="form-control">
+                                    {% for coun in form.country %}
+                                        <option value="{{ coun.value }}">{{ coun }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label for="fname">First Name</label>
+                            <input type="text" id="fname" name="first_name" class="form-control"
+                                   placeholder="Your firstname" value="{{ form.first_name.value }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lname">Last Name</label>
+                            <input type="text" id="lname" name="last_name" class="form-control"
+                                   placeholder="Your lastname" value="{{ form.last_name.value }}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="companyname">Company Name</label>
+                            <input type="text" id="companyname" name="company_name" class="form-control"
+                                   placeholder="Company Name" value="{{ form.company_name.value }}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="fname">Address</label>
+                            <input type="text" id="address" class="form-control" name="address"
+                                   placeholder="Enter Your Address"
+                                   value="{{ form.address.value }}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="city">Town/City</label>
+                            <div class="form-field">
+                                <i class="icon icon-arrow-down3"></i>
+                                <select name="city" id="people" class="form-control">
+                                    {% for city in form.city %}
+                                        <option value="{{ city.value }}">{{ city }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label for="stateprovince">State/Province</label>
+                            <div class="form-field">
+                                <i class="icon icon-arrow-down3"></i>
+                                <select name="state" id="people" class="form-control">
+                                    {% for state in form.state %}
+                                        <option value="{{ state.value }}">{{ state }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lname">Zip/Postal Code</label>
+                            <input type="text" id="zippostalcode" name="postcode" class="form-control"
+                                   placeholder="Zip / Postal" value="{{ form.postcode.value }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label for="Phone">Phone Number</label>
+                            <input type="text" id="zippostalcode" name="phone" class="form-control"
+                                   placeholder="" value="{{ form.phone.value }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            {#                            <div class="radio">#}
+                            {#                                <label><input type="radio" name="optradio">Create an Account?#}
+                            {#                                </label>#}
+                            {#                                <label><input type="radio" name="optradio"> Ship to different#}
+                            {#                                    address</label>#}
+                            {#                            </div>#}
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Сохранить">
+                </div>
+            </form>
+                </div>
+                <div class="col-md-5">
+                    <div class="cart-detail">
+                        <h2>Cart Total</h2>
+                        <ul>
+{#                            <li>#}
+{#                                <span>Subtotal</span> <span>$100.00</span>#}
+{#                                <ul>#}
+{#                                    <li><span>1 x Product Name</span> <span>$99.00</span></li>#}
+{#                                    <li><span>1 x Product Name</span> <span>$78.00</span></li>#}
+{#                                </ul>#}
+{#                            </li>#}
+{#                            <li><span>Shipping</span> <span>$0.00</span></li>#}
+                            <li><span>Order Total</span>
+                                <span>${{ order.cart__cartitem__price_sum__sum }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="cart-detail">
+                        <h2>Payment Method</h2>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="radio">
+                                    <label><input type="radio" name="optradio">Direct Bank
+                                        Tranfer</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="radio">
+                                    <label><input type="radio" name="optradio">Check Payment</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="radio">
+                                    <label><input type="radio" name="optradio">Paypal</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="">I have read and accept
+                                        the
+                                        terms and conditions</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><a href="#" class="btn btn-primary">Place an order</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

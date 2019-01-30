@@ -1,10 +1,15 @@
 from django.contrib import messages
-from django.db.models import Q
+from django.core.paginator import Paginator
+from django.db.models import Q, Sum
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
 from Store import settings
+
+from profiles.models import Profile
+from profiles.forms import ProfileForm
+
 from .models import (Product, Cart, CartItem, Order, Category)
 from .forms import CartItemForm
 
@@ -13,6 +18,7 @@ class ProductsList(ListView):
     """Список всех продуктов"""
     model = Product
     template_name = "shop/list-product.html"
+    paginate_by = 5
 
 
 class ProductDetail(DetailView):
@@ -52,13 +58,16 @@ class AddCartItem(View):
 class CartItemList(ListView):
     """Товары в корзине подьзователя"""
     template_name = 'shop/cart.html'
+    cart_items = ''
 
     def get_queryset(self):
-        return CartItem.objects.filter(cart__user=self.request.user, cart__accepted=False)
+        self.cart_items = CartItem.objects.filter(cart__user=self.request.user, cart__accepted=False)
+        return self.cart_items
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cart_id"] = Cart.objects.get(user=self.request.user, accepted=False).id
+        context["total"] = self.cart_items.aggregate(Sum('price_sum'))
         return context
 
 
@@ -87,7 +96,13 @@ class Search(View):
         search = request.GET.get("search", None)
         products = Product.objects.filter(Q(title__icontains=search) |
                                           Q(category__name__icontains=search))
-        return render(request, "shop/list-product.html", {"object_list": products})
+
+        paginator = Paginator(products, 5)
+        page = request.GET.get('page')
+        page_obj = paginator.get_page(page)
+        context = {"object_list": products, "page_obj": page_obj}
+
+        return render(request, "shop/list-product.html", context)
 
 
 class AddOrder(View):
@@ -104,19 +119,41 @@ class AddOrder(View):
 class OrderList(ListView):
     """Список заказов пользователя"""
     template_name = "shop/order-list.html"
+    order = ''
 
     def get_queryset(self):
-        return Order.objects.filter(cart__user=self.request.user, accepted=False)
+        self.order = Order.objects.filter(cart__user=self.request.user, accepted=False)
+        return self.order
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total"] = self.order.aggregate(Sum('cart__cartitem__price_sum'))
+        return context
 
     def post(self, request):
+        """Удаление заказа"""
         order = Order.objects.get(id=request.POST.get("pk"), cart__user=request.user, accepted=False)
+        Cart.objects.get(order__id=order.id, user=request.user, accepted=True).delete()
         order.delete()
         return redirect("orders")
+
+
+class CheckOut(View):
+    """Оплата заказа"""
+    def get(self, request, pk):
+        order = Order.objects.filter(
+            id=pk,
+            cart__user=request.user,
+            accepted=False
+        ).aggregate(Sum('cart__cartitem__price_sum'))
+        form = ProfileForm(instance=Profile.objects.get(user=request.user))
+        return render(request, 'shop/checkout.html', {"order": order, "form": form})
 
 
 class CategoryProduct(ListView):
     """Список товаров из категории"""
     template_name = "shop/list-product.html"
+    paginate_by = 5
 
     def get_queryset(self):
         slug = self.kwargs.get("slug")

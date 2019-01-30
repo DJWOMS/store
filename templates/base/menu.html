@@ -6,7 +6,19 @@
                 <div class="col-xs-2">
                     <div id="colorlib-logo"><a href="/">Store</a></div>
                 </div>
-                <div class="col-xs-10 text-right menu-1">
+                <div class="col-xs-4">
+                    <form method="get" action="{% url 'search' %}">
+                        {% csrf_token %}
+                        <input class=""
+                               type="text"
+                               value=""
+                               name="search"
+                               placeholder="Поиск"
+                               style="border: 1px solid #cecece; width: 200px; height: 30px; padding: 10px;">
+                        <button class="btn-info btn-sm" type="submit">Найти</button>
+                    </form>
+                </div>
+                <div class="col-xs-6 text-right menu-1">
                     <ul>
                         <li class="active"><a href="/">Home</a></li>
                         <li class="has-dropdown">
@@ -25,29 +37,21 @@
                                 {% endrecursetree %}
                             </ul>
                         </li>
-                        <li class="has-dropdown">
-                            <a href="#">Profile</a>
-                            <ul class="dropdown">
-                                {% if user.is_authenticated %}
-                                    <li><a href="{% url 'cart_item' %}">Cart</a></li>
-                                {% endif %}
-                                <li><a href="{% url 'orders' %}">Order</a></li>
-                            </ul>
-                        </li>
                         {% if user.is_authenticated %}
+                            <li class="has-dropdown">
+                                <a href="#">Profile</a>
+                                <ul class="dropdown">
+                                    <li><a href="{% url 'cart_item' %}">Cart</a></li>
+                                    <li><a href="{% url 'orders' %}">Order</a></li>
+                                    <li><a href="{% url 'profile' pk=user.id %}">Settings</a></li>
+                                </ul>
+                            </li>
                             <li><a href="/accounts/logout/">Logout</a></li>
                             <li><a href="#">{{ user.username }}</a></li>
                         {% else %}
                             <li><a href="/accounts/login/">Login</a></li>
                         {% endif %}
                         <li><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
-                        <li>
-                            <form method="get" action="{% url 'search' %}">
-                                {% csrf_token %}
-                                <input type="text" value="" name="search" placeholder="Поиск">
-                                <button class="small" type="submit">Найти</button>
-                            </form>
-                        </li>
                     </ul>
                 </div>
             </div>
