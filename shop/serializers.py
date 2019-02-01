@@ -13,16 +13,16 @@ class PhotoSer(serializers.ModelSerializer):
 
 class GallerySer(serializers.ModelSerializer):
     """Галерея"""
-    photos = PhotoSer()
+    photos = PhotoSer(many=True)
     class Meta:
         model = Gallery
-        fields = ("galleries",)
+        fields = ("photos",)
 
 
 class ProductSer(serializers.ModelSerializer):
     """Сериализация продуктов"""
-    # gallery = GallerySer()
-    # photo = PhotoSer()
+    gallery = GallerySer()
+    photo = PhotoSer()
     class Meta:
         model = Product
         fields = (
