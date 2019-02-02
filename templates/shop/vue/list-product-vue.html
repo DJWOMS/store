@@ -3,14 +3,14 @@
 {#{% load bootstrap4 %}#}
 {% block product %}
     <div class="row" id="app">
-        <div class="col-md-10 col-md-push-2" >
+        <div class="col-md-10 col-md-push-2">
             <div class="row row-pb-lg">
                 <div v-for="product in products"
                      class="col-md-4 text-center">
                     <div class="product-entry">
-                        <div class="product-img"
-                             style="background-image: url();">
-                            {#product.photo#}
+                        <div class="product-img">
+                            <img style="width: 60%;"
+                                 v-bind:src="urlImg + product.photo.image">
                             <p class="tag"><span class="new">New</span></p>
                             <div class="cart">
                                 <p>
@@ -26,7 +26,9 @@
                         </div>
                         <div class="desc">
                             <h3>
-                                <a href="#"><% product.title %></a>
+                                <a v-bind:href="urlImg+'/detail/'+product.slug">
+                                    <% product.title %>
+                                </a>
                             </h3>
                             <p class="price"><span>$<% product.price %></span></p>
                         </div>
@@ -57,21 +59,32 @@
                         <div class="panel-group" id="accordion" role="tablist"
                              aria-multiselectable="true">
                             <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion"
-                                           href="#collapseOne" aria-expanded="true"
-                                           aria-controls="collapseOne">Men
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse"
-                                     role="tabpanel" aria-labelledby="headingOne">
+                                {#                                <div class="panel-heading" role="tab" id="headingOne">#}
+                                {#                                    <h4 class="panel-title">#}
+                                {#                                        <a data-toggle="collapse" data-parent="#accordion"#}
+                                {#                                           href="#collapseOne" aria-expanded="true"#}
+                                {#                                           aria-controls="collapseOne">Men#}
+                                {#                                        </a>#}
+                                {#                                    </h4>#}
+                                {#                                </div>#}
+                                {#                                <div id="collapseOne" class="panel-collapse collapse"#}
+                                {#                                     role="tabpanel" aria-labelledby="headingOne">#}
+                                <div>
                                     <div class="panel-body">
                                         <ul>
-                                            <li><a v-on:click="search" href="#">LG</a></li>
-                                            <li><a href="/sort/?category=Noth">Noth</a></li>
-                                            <li><a href="/sort/?category=TV">TV</a></li>
+                                            <li v-for="cat in listCategory">
+                                                <a v-on:click="search(cat=cat)" href="#">
+                                                    <% cat.name %>
+                                                </a>
+                                                <ul>
+                                                    <li v-for="child in sortedList">
+                                                        <a v-on:click="search(cat=child)"
+                                                           href="#">
+                                                            <% child.name %>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -89,14 +102,15 @@
                                     <div class="form-field">
                                         <i class="icon icon-arrow-down3"></i>
                                         <select v-model="price1"
-                                                v-on:change="search"
+                                                v-on:change="search()"
                                                 name="people"
-                                                id="people"
+                                                id="at"
                                                 class="form-control">
                                             <option v-bind:value="1">1</option>
                                             <option v-bind:value="200">200</option>
                                             <option v-bind:value="300">300</option>
                                             <option v-bind:value="1000">1000</option>
+                                            <option v-bind:value="10000">10000</option>
                                         </select>
                                     </div>
                                 </div>
@@ -106,12 +120,17 @@
                                     <label for="guests">Price to:</label>
                                     <div class="form-field">
                                         <i class="icon icon-arrow-down3"></i>
-                                        <select name="people" id="people" class="form-control">
-                                            <option value="2000">2000</option>
-                                            <option value="4000">4000</option>
-                                            <option value="6000">6000</option>
-                                            <option value="8000">8000</option>
-                                            <option value="10000">10000</option>
+                                        <select v-model="price2"
+                                                v-on:change="search()"
+                                                name="people2"
+                                                id="of"
+                                                class="form-control">
+                                            <option v-bind:value="2000">2000</option>
+                                            <option v-bind:value="4000">4000</option>
+                                            <option v-bind:value="6000">6000</option>
+                                            <option v-bind:value="8000">8000</option>
+                                            <option v-bind:value="10000">10000</option>
+                                            <option v-bind:value="100000">100000</option>
                                         </select>
                                     </div>
                                 </div>
@@ -123,8 +142,8 @@
                     <h2>availability</h2>
                     <div class="color-wrap">
                         <p class="color-desc">
-                            <a href="#" class="color color-1">True</a>
-                            <a href="#" class="color color-2">False</a>
+                            <a href="#" v-on:click="search(cat=false, 'True')" class="color color-1">Да</a>
+                            <a href="#" v-on:click="search(cat=false, 'False')" class="color color-2">Нет</a>
                         </p>
                     </div>
                 </div>
@@ -141,6 +160,9 @@
                 {#                </p>#}
                 {#            </div>#}
                 {#        </div>#}
+                {#                <p v-for="cat in listCategory" v-if="cat ? receive(cat) : ''">#}
+                {#                    <b v-on:ckick="receive(cat) "><% cat.name %></b>#}
+                {#                </p>#}
             </div>
         </div>
     </div>
@@ -160,12 +182,19 @@
             data() {
                 return {
                     products: '',
+                    listCategory: '',
+                    listChildren: [],
                     url: "http://127.0.0.1:8000/sort/",
-
+                    urlImg: "http://127.0.0.1:8000",
                     category: '',
-                    price1: '',
-                    price2: '',
-                    availability: '',
+                    price1: 0,
+                    price2: 1000000000,
+                    //availability: '',
+                }
+            },
+            computed: {
+                sortedList() {
+                    return this.listChildren
                 }
             },
             created() {
@@ -178,30 +207,49 @@
                         type: "POST",
                         data: {
                             category: '',
-                            price_1: '',
-                            price_2: '',
+                            price1: '',
+                            price2: '',
                             availability: '',
                         },
                         success: (response) => {
-                            this.products = response
+                            this.products = response.products
+                            this.listCategory = response.category
                         }
                     })
                 },
-                search() {
+                search(cat, availability = 'True') {
                     $.ajax({
                         url: this.url,
                         type: "POST",
                         data: {
-                            category: this.category,
-                            price_1: this.price1,
-                            price_2: this.price2,
-                            availability: this.availability,
+                            category: cat ? cat.name : '',
+                            price1: this.price1,
+                            price2: this.price2,
+                            availability: availability,
                         },
                         success: (response) => {
-                            this.products = response
+                            this.products = response.products
                         }
                     })
-                }
+                    cat ? this.receive(cat) : ''
+                },
+                receive(item) {
+                    for (var i = 0; i < item.children.length; i++) {
+                        this.listChildren.push(item.children[i])
+                        console.log(this.listChildren)
+                    }
+                },
+                //getLeaf(node) {
+                //    if (node.children) {
+                //        return this.getLeaf(node.children);
+                //    } else {
+                //       return node;
+                //   }
+                // },
+                // test(item) {
+                //    var a = this.getLeaf(item)
+                //    console.log(a);
+                // }
             }
         })
     </script>

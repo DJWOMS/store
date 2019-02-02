@@ -1,10 +1,7 @@
-import json
-from django.core import serializers
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum
-from django.forms.models import model_to_dict
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
@@ -16,7 +13,8 @@ from profiles.forms import ProfileForm
 
 from .models import (Product, Cart, CartItem, Order, Category)
 from .forms import CartItemForm
-from .serializers import ProductSer
+from .serializers import ProductSer, CatSer
+
 
 class ProductsList(ListView):
     """Список всех продуктов"""
@@ -43,7 +41,10 @@ class AddCartItem(View):
         quantity = request.POST.get("quantity", None)
         if quantity is not None and int(quantity) > 0:
             try:
-                item = CartItem.objects.get(cart__user=request.user, product_id=pk)
+                item = CartItem.objects.get(
+                    cart__user=request.user,
+                    product_id=pk,
+                    cart__accepted=False)
                 item.quantity += int(quantity)
             except CartItem.DoesNotExist:
                 item = CartItem(
@@ -176,10 +177,11 @@ class SortProducts(View):
 
     def post(self, request):
         category = request.POST.get("category", None)
-        price_1 = request.POST.get("price1", 0)
-        price_2 = request.POST.get("price2", 10000000000000)
+        price_1 = request.POST.get("price1", 1)
+        price_2 = request.POST.get("price2", 1000000000)
         availability = request.POST.get("availability", None)
-        print(category)
+        print(price_1)
+        print(price_2)
         filt = []
 
         if category:
@@ -200,14 +202,16 @@ class SortProducts(View):
             filt.append(availability)
 
         sort = Product.objects.filter(*filt)
-        print(sort)
-        # dict_obj = model_to_dict(sort)
 
-        # products_sort = serializers.serialize("json", sort)
-        # return JsonResponse({"products": products_sort}, safe=False)
-        # data = json.dumps(dict_obj)
+        category_ser = CatSer(Category.objects.filter(parent__isnull=True), many=True)
+        print(sort)
         serializers = ProductSer(sort, many=True)
-        return JsonResponse(serializers.data, safe=False)
+        return JsonResponse(
+            {
+                "products": serializers.data,
+                "category": category_ser.data
+             },
+            safe=False)
 
 
 
