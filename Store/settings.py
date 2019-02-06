@@ -168,6 +168,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MY_INFO = 80
 MESSAGE_LEVEL = MY_INFO
 
+
 try:
     from .local_settings import *
 except ImportError:
