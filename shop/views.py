@@ -170,6 +170,29 @@ class CategoryProduct(ListView):
         return products
 
 
+class CategoryProductVue(View):
+    """Список товаров из категории для vue"""
+    def get(self, request):
+        return render(request, "shop/vue/list-product-vue.html")
+
+    def post(self, request):
+        slug = request.POST.get("slug")
+        node = Category.objects.get(slug=slug)
+        if Product.objects.filter(category__slug=slug).exists():
+            products = Product.objects.filter(category__slug=slug)
+        else:
+            products = Product.objects.filter(category__slug__in=[x.slug for x in node.get_family()])
+
+        category_ser = CatSer(Category.objects.filter(parent__isnull=True), many=True)
+        serializers = ProductSer(products, many=True)
+        return JsonResponse(
+            {
+                "products": serializers.data,
+                "category": category_ser.data
+            },
+            safe=False)
+
+
 class SortProducts(View):
     """Фильтр товаров"""
     def get(self, request):
@@ -180,8 +203,7 @@ class SortProducts(View):
         price_1 = request.POST.get("price1", 1)
         price_2 = request.POST.get("price2", 1000000000)
         availability = request.POST.get("availability", None)
-        print(price_1)
-        print(price_2)
+
         filt = []
 
         if category:
@@ -204,7 +226,6 @@ class SortProducts(View):
         sort = Product.objects.filter(*filt)
 
         category_ser = CatSer(Category.objects.filter(parent__isnull=True), many=True)
-        print(sort)
         serializers = ProductSer(sort, many=True)
         return JsonResponse(
             {

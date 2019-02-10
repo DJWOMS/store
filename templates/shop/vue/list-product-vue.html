@@ -73,12 +73,12 @@
                                     <div class="panel-body">
                                         <ul>
                                             <li v-for="cat in listCategory">
-                                                <a v-on:click="search(cat=cat)" href="#">
+                                                <a v-on:click="addCat(cat)" href="#">
                                                     <% cat.name %>
                                                 </a>
                                                 <ul>
                                                     <li v-for="child in sortedList">
-                                                        <a v-on:click="search(cat=child)"
+                                                        <a v-on:click="addCat(child)"
                                                            href="#">
                                                             <% child.name %>
                                                         </a>
@@ -111,6 +111,8 @@
                                             <option v-bind:value="300">300</option>
                                             <option v-bind:value="1000">1000</option>
                                             <option v-bind:value="10000">10000</option>
+                                            <option v-bind:value="20000">20000</option>
+                                            <option v-bind:value="50000">50000</option>
                                         </select>
                                     </div>
                                 </div>
@@ -142,8 +144,10 @@
                     <h2>availability</h2>
                     <div class="color-wrap">
                         <p class="color-desc">
-                            <a href="#" v-on:click="search(cat=false, 'True')" class="color color-1">Да</a>
-                            <a href="#" v-on:click="search(cat=false, 'False')" class="color color-2">Нет</a>
+                            <a href="#" v-on:click="addAvailability('True')"
+                               class="color color-1">Да</a>
+                            <a href="#" v-on:click="addAvailability('False')"
+                               class="color color-2">Нет</a>
                         </p>
                     </div>
                 </div>
@@ -189,7 +193,7 @@
                     category: '',
                     price1: 0,
                     price2: 1000000000,
-                    //availability: '',
+                    availability: "True",
                 }
             },
             computed: {
@@ -198,18 +202,18 @@
                 }
             },
             created() {
-                this.loadAll()
+                let url_string = window.location.href
+                let url = new URL(url_string);
+                var slug = url.searchParams.get("slug");
+                this.loadCat(slug)
             },
             methods: {
-                loadAll() {
+                loadCat(slug) {
                     $.ajax({
-                        url: this.url,
+                        url: "http://127.0.0.1:8000/category-vue/",
                         type: "POST",
                         data: {
-                            category: '',
-                            price1: '',
-                            price2: '',
-                            availability: '',
+                            slug: slug,
                         },
                         success: (response) => {
                             this.products = response.products
@@ -217,39 +221,37 @@
                         }
                     })
                 },
-                search(cat, availability = 'True') {
+                addCat(cat) {
+                    this.category = cat
+                    this.search()
+                },
+                addAvailability(availability) {
+                    this.availability = availability
+                    this.search()
+                },
+                search() {
                     $.ajax({
                         url: this.url,
                         type: "POST",
                         data: {
-                            category: cat ? cat.name : '',
+                            category: this.category ? this.category.name : '',
                             price1: this.price1,
                             price2: this.price2,
-                            availability: availability,
+                            availability: this.availability,
                         },
                         success: (response) => {
                             this.products = response.products
                         }
                     })
-                    cat ? this.receive(cat) : ''
+                    this.category ? this.receive(this.category) : ''
                 },
                 receive(item) {
+                    this.listChildren = []
                     for (var i = 0; i < item.children.length; i++) {
                         this.listChildren.push(item.children[i])
-                        console.log(this.listChildren)
+                        //console.log(this.listChildren)
                     }
-                },
-                //getLeaf(node) {
-                //    if (node.children) {
-                //        return this.getLeaf(node.children);
-                //    } else {
-                //       return node;
-                //   }
-                // },
-                // test(item) {
-                //    var a = this.getLeaf(item)
-                //    console.log(a);
-                // }
+                }
             }
         })
     </script>

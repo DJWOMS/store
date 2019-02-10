@@ -27,10 +27,12 @@
                                 {% recursetree menu_categoryes %}
                                     <div class="a-node">
                                         <a class="dropdown-item"
-                                           href="{% url 'category' slug=node.slug %}">{{ node.name }}</a>
+                                           href="/category-vue/?slug={{node.slug}}">
+                                            {{ node.name }}
+                                        </a>
                                         {% if not node.is_leaf_node %}
                                             <div class="a-child">
-                                                <a class="" href="#">{{ children }}</a>
+                                                {{ children }}
                                             </div>
                                         {% endif %}
                                     </div>
