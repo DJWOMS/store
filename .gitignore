@@ -1,7 +1,7 @@
 .idea
 
 venv
-
+venv3
 local_settings.py
 prod_settings.py
 __pycache__/

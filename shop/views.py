@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 
-from Store import settings
+from importlib import import_module
+from django.conf import settings
 
 from profiles.models import Profile
 from profiles.forms import ProfileForm
@@ -37,18 +38,34 @@ class ProductDetail(DetailView):
 
 class AddCartItem(View):
     """Добавление товара в карзину"""
+
+    def check_cart(self, request):
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user, accepted=False)
+        else:
+            session_cart = request.session.get('cart')
+            if not session_cart:
+                SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+                session = SessionStore()
+                session.create()
+                session_cart = session.session_key
+                request.session['cart'] = session_cart
+            cart, add = Cart.objects.get_or_create(session=session_cart, accepted=False)
+        return cart
+
     def post(self, request, slug, pk):
         quantity = request.POST.get("quantity", None)
         if quantity is not None and int(quantity) > 0:
+            cart = self.check_cart(request)
             try:
                 item = CartItem.objects.get(
-                    cart__user=request.user,
+                    cart_id=cart.id,
                     product_id=pk,
                     cart__accepted=False)
                 item.quantity += int(quantity)
             except CartItem.DoesNotExist:
                 item = CartItem(
-                    cart=Cart.objects.get(user=request.user, accepted=False),
+                    cart_id=cart.id,
                     product_id=pk,
                     quantity=int(quantity)
                 )

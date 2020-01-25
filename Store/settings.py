@@ -126,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -151,14 +151,7 @@ LOGIN_REDIRECT_URL = "/"
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/'
 # ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -166,6 +159,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MY_INFO = 80
 MESSAGE_LEVEL = MY_INFO
 
+
+CART_SESSION_ID = 'cart'
 
 try:
     from .local_settings import *
