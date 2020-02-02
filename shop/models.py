@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.html import format_html, format_html_join
 
 from photologue.models import Gallery, Photo
 
@@ -74,7 +75,9 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     """Товары в корзине"""
-    cart = models.ForeignKey(Cart, verbose_name='Корзина', on_delete=models.CASCADE)
+    cart = models.ForeignKey(
+        Cart, verbose_name='Корзина', on_delete=models.CASCADE, related_name="cart_item"
+    )
     product = models.ForeignKey(Product, verbose_name='Товар', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField('Количество', default=1)
     price_sum = models.PositiveIntegerField("Общая сумма", default=0)
@@ -103,6 +106,43 @@ class Order(models.Model):
 
     def __str__(self):
         return "{}".format(self.cart)
+
+    def get_table_products(self):
+        table_body = format_html_join(
+            '\n',
+            """<tr>
+            <td>{0}</td>
+            <td>{1}</td>
+            <td>{2}</td>
+            <td>{3}</td>
+            </tr>""",
+            (
+                (item.product.title, item.quantity, item.product.price, item.price_sum)
+                for item in self.cart.cart_item.all()
+            )
+        )
+
+        return format_html(
+            """
+            <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="product-name">Название</th>
+                    <th class="product-article">Количество</th>
+                    <th class="product-quantity">Цена</th>
+                    <th class="product-quantity">Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+            {}
+            </tbody>
+            </table>
+            """,
+            table_body
+        )
+
+    get_table_products.short_description = 'Товары'
+    get_table_products.allow_tags = True
 
 
 @receiver(post_save, sender=User)

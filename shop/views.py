@@ -149,7 +149,7 @@ class OrderList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["total"] = self.order.aggregate(Sum('cart__cartitem__price_sum'))
+        context["total"] = self.order.aggregate(Sum('cart__cart_item__price_sum'))
         return context
 
     def post(self, request):
@@ -167,7 +167,7 @@ class CheckOut(View):
             id=pk,
             cart__user=request.user,
             accepted=False
-        ).aggregate(Sum('cart__cartitem__price_sum'))
+        ).aggregate(Sum('cart__cart_item__price_sum'))
         form = ProfileForm(instance=Profile.objects.get(user=request.user))
         return render(request, 'shop/checkout.html', {"order": order, "form": form})
 
@@ -239,7 +239,6 @@ class SortProducts(View):
             availability = Q()
             availability &= Q(availability=avail)
             filt.append(availability)
-
         sort = Product.objects.filter(*filt)
 
         category_ser = CatSer(Category.objects.filter(parent__isnull=True), many=True)
