@@ -35,5 +35,7 @@ class SimpleTest(TestCase):
     def test_cat_get(self):
         response = self.client.get('/category/test/')
         self.assertEqual(response.status_code, 200)
-        print(response.context["object_list"])
+        product = Product.objects.get(category__name__icontains="Test")
+        # print(response.context)
+        self.assertTrue(product in response.context["object_list"])
 
