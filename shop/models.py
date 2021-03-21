@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils import timezone
 from django.utils.html import format_html, format_html_join
 
 from photologue.models import Gallery, Photo
@@ -98,7 +97,7 @@ class Order(models.Model):
     """Заказы"""
     cart = models.ForeignKey(Cart, verbose_name='Корзина', on_delete=models.CASCADE)
     accepted = models.BooleanField(verbose_name='Заказ выполнен', default=False)
-    date = models.DateTimeField("Дата", default=timezone.now())
+    date = models.DateTimeField("Дата", auto_now_add=True)
 
     class Meta:
         verbose_name = 'Заказ'
@@ -150,7 +149,3 @@ def create_user_cart(sender, instance, created, **kwargs):
     """Создание корзины пользователя"""
     if created:
         Cart.objects.create(user=instance)
-
-
-
-

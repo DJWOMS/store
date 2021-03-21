@@ -20,19 +20,16 @@ class Profile(models.Model):
     country = models.ForeignKey(
         Country,
         verbose_name='Страна',
-        default="1",
         null=True,
         on_delete=models.SET_NULL)
     state = models.ForeignKey(
         State,
         verbose_name='Республика/Штат',
-        default="1",
         null=True,
         on_delete=models.SET_NULL)
     city = models.ForeignKey(
         City,
         verbose_name='Город',
-        default="1",
         null=True,
         on_delete=models.SET_NULL)
     address = models.CharField("Адрес", max_length=250, default="")
@@ -54,9 +51,4 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     """Создание профиля пользователя при регистрации"""
     if created:
-        Profile.objects.create(user=instance, id=instance.id)
-
-
-@receiver
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+        Profile.objects.create(user=instance)
